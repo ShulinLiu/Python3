@@ -7,12 +7,12 @@ Created on Sun Feb 4 2018
 Describes:
 Classes and objects used in monopoly game
 """
-class position:
-    """XY coordinate"""
-
-    def __init__(self, x=0, y=0):
-        self.X = x
-        self.Y = y
+# class position:
+#     """XY coordinate"""
+#
+#     def __init__(self, x=0, y=0):
+#         self.X = x
+#         self.Y = y
 
 class account(object):
     """Account info class"""

@@ -8,7 +8,7 @@ Describes:
 Classes and objects used in the play board
 """
 from constant import PlaceType, StreetRent, StreetCost, StreetColor
-from objects import position
+# from objects import position
 
 def decor(func):
     def wrap():
@@ -26,6 +26,17 @@ class deeds(object):
         self.m_purchasePrice = purchaseprice
         self.m_mortgageValue = mortgageValue
         self.m_unmortage = unmortage
+
+    def showDeedInfo(self):
+        print("## Deed Info ##")
+        if not (self.m_owner is None):
+            print("Owner: " + str(self.m_owner))
+        else:
+            print("Not belong to anyone.")
+        print("Purchase Price: " + str(self.m_purchasePrice))
+        print("Mortgage Value: " + str(self.m_mortgageValue))
+        print("Un-mortgage Price: " + str(self.m_unmortage))
+        # print("###############################")
 
     # def getOwner(self):
     #     return self.m_owner
@@ -61,8 +72,8 @@ class stationdeeds(deeds):
     """deeds of stations"""
 
     # 4 kinds of rent price
-    def __init__(self, owner=None, purchaseprice=0, mortgageValue=0, unmortage=0,
-                 rentprice=[0, 0, 0, 0]):
+    def __init__(self, purchaseprice=0, mortgageValue=0, unmortage=0,
+                 rentprice=[0, 0, 0, 0], owner=None):
         self.m_owner = owner
         self.m_purchasePrice = purchaseprice
         self.m_mortgageValue = mortgageValue
@@ -73,13 +84,13 @@ class stationdeeds(deeds):
 class utilitydeeds(deeds):
     """deeds of utilities"""
 
-    def __init__(self, owner=None, purchaseprice=0, mortgageValue=0, unmortage=0,
-                 rent=0):
+    def __init__(self, purchaseprice=0, mortgageValue=0, unmortage=0,
+                 rent=0, owner=None):
         self.m_owner = owner
         self.m_purchasePrice = purchaseprice
         self.m_mortgageValue = mortgageValue
         self.m_unmortage = unmortage
-        # self.m_rent = rent
+        self.m_rent = rent
 
 
 class place(object):
@@ -107,12 +118,26 @@ class place(object):
     #
     #@_decorator
     def showPlaceInfo(self):
+        print("============ Info ============")
         print("Place Type: " + str(self.m_type))
         print("Place name: " + str(self.m_name))
-        if not (self.m_owner is None):
+        if not (self.m_owner is None): # show owner info
             print("Owner: " + str(self.m_owner))
         else:
             print("Not belong to anyone.")
+
+        print("Posiition: " + str(self.m_position))
+        # if(self.m_position is None): # show position info
+        #     print("No position info.")
+        # else:
+        #     print("Place position: (" + str(self.m_position.X) +","+str(self.m_position.Y) +")")
+
+        if(self.m_deed is None): # show deed info
+            print("No deed info.")
+        else:
+            self.m_deed.showDeedInfo()
+
+        print("==============================")
 
 # place.showPlaceInfo =place._decorator(place.showPlaceInfo)
 
@@ -123,7 +148,8 @@ class go(place):
     def __init__(self):
         self.m_name = 'GO'
         self.m_type = PlaceType.GO
-        self.m_position = position(0, 0)
+        self.m_position = 0
+        # self.m_position = position(0, 0)
         self.m_owner = 'no'
         self.m_deed = None
 
@@ -131,11 +157,12 @@ class go(place):
 class jail(place):
     """docstring for jail"""
 
-    def __init__(self, arg):
+    def __init__(self):
         super(jail, self).__init__()
         self.m_name = 'Jail'
         self.m_type = PlaceType.JAIL
-        self.m_position = position(10, 0)
+        self.m_position = 10
+        # self.m_position = position(10, 0)
         self.m_owner = 'no'
         self.m_deed = None
 
@@ -143,11 +170,11 @@ class jail(place):
 class chance(place):
     """docstring for chance"""
 
-    def __init__(self, arg):
+    def __init__(self, position):
         super(chance, self).__init__()
         self.m_name = 'Chance'
         self.m_type = PlaceType.CHANCE
-        # self.m_position = position(self, 10, 0)
+        self.m_position = position
         self.m_owner = 'no'
         self.m_deed = None
 
@@ -155,11 +182,11 @@ class chance(place):
 class communitychess(place):
     """docstring for chance"""
 
-    def __init__(self, arg):
+    def __init__(self, position):
         super(chance, self).__init__()
         self.m_name = 'Community Chest'
         self.m_type = PlaceType.COMMUNITY_CHEST
-        # self.m_position = position(self, 10, 0)
+        self.m_position = position
         self.m_owner = 'no'
         self.m_deed = None
 
@@ -167,11 +194,11 @@ class communitychess(place):
 class tax(place):
     """docstring for chance"""
 
-    def __init__(self, arg):
+    def __init__(self, position):
         super(chance, self).__init__()
         self.m_name = 'Super Tax'
         self.m_type = PlaceType.TAX
-        # self.m_position = position(self, 10, 0)
+        self.m_position = position
         self.m_owner = 'no'
         self.m_deed = None
 
@@ -191,16 +218,29 @@ structure of street id:
 # To do: use streetid to access info,
 # such as position, color, rent price
 
+# encoding: utf-8
+def load_dict_from_file(filepath):
+    _dict = {}
+    try:
+        dict_file =  open(filepath, 'r')
+        for line in dict_file:
+            (key, value) = line.strip().split('\t')
+            _dict[int(key)] = value
+    except IOError as ioerr:
+        print ("文件 %s 不存在" % (filepath))
+
+    return _dict
+
+NameDict = load_dict_from_file ('namedict.txt')
 
 StreetDict = {}
-
 
 def getStreetName(streetid):
     return NameDict.get(streetid)
 
 
-def getStreetPosition(streetid):
-    return PosDict.get(streetid)
+# def getStreetPosition(streetid):
+#     return PosDict.get(streetid)
 
 
 def getStreetDeeds(streetid):
@@ -211,10 +251,10 @@ def getStreetDeeds(streetid):
 class street(place):
     """Street: street in play board"""
 
-    def __init__(self, streetid, owner='no'):
+    def __init__(self, streetid, position, owner='no'):
         self.m_name = getStreetName(streetid)  # street name
         self.m_type = PlaceType.STREET  # place type
-        self.m_position = getStreetPosition(streetid)  # street position
+        self.m_position = position  # street position
         self.m_owner = owner  # street owner
         self.m_deed = getStreetDeeds(streetid)  # street deed
 
@@ -222,7 +262,15 @@ class street(place):
 ######################## utility ############################
 
 def getUltilityDeed(name):
-    pass
+    # use hard word first
+    # To do: change to read from file
+    if name == "WATER WORKS":
+        return utilitydeeds(150, 75, 83)
+    elif name == "ELECTRIC COMPANY":
+        return utilitydeeds(150, 75, 83)
+    else:
+        print("Not valid utility!")
+        return None
 
 
 class utility(place):
@@ -238,15 +286,21 @@ class utility(place):
 ######################## station ############################
 
 def getStationDeed(name):
-    pass
-
+    if name == "KING CROSS STATION" or name == "MARYLEBONE STATION"\
+            or name == "FENCHURCH STREET STATION" or name == "LIVERPOOL STREET STATION":
+        return stationdeeds(200, 100, 110, [25, 50, 100, 200])
+    else:
+        print("station error.")
+    # elif name == "MARYLEBONE STATION":
+    #     return stationdeeds(200,100,110,[25,50,100,200])
 
 class station(place):
     """docstring for station"""
 
-    def __init__(self, name):
+    def __init__(self, name, position):
         super(station, self).__init__()
         self.name = name
+        self.m_position = position
         self.m_type = PlaceType.STATION
         self.m_deed = getStationDeed(name)
 
