@@ -19,7 +19,9 @@ class PlaceType(Enum):
     CHANCE = 4
     COMMUNITY_CHEST = 5
     JAIL = 6
-    TAX = 7
+    GOTOJAIL = 7
+    TAX = 8
+    PARKING = 9
 
 class StreetID(Enum):
     OLD_KENT_ROAD = 0

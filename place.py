@@ -52,8 +52,8 @@ class streetdeeds(deeds):
     """deeds of street"""
 
     # 7 kinds of rent price,and 2 kinds of costs
-    def __init__(self, owner=None, purchaseprice=0, mortgageValue=0, unmortage=0,
-                 rentprice=[0, 0, 0, 0, 0, 0, 0], cost=[0, 0]):
+    def __init__(self, purchaseprice=0, mortgageValue=0, unmortage=0,
+                 rentprice=[0, 0, 0, 0, 0, 0, 0], cost=[0, 0], owner=None):
         self.m_owner = owner
         self.m_purchasePrice = purchaseprice
         self.m_mortgageValue = mortgageValue
@@ -166,6 +166,29 @@ class jail(place):
         self.m_owner = 'no'
         self.m_deed = None
 
+class parking(place):
+    """docstring for jail"""
+
+    def __init__(self):
+        super(parking, self).__init__()
+        self.m_name = 'FreeParking'
+        self.m_type = PlaceType.PARKING
+        self.m_position = 20
+        # self.m_position = position(10, 0)
+        self.m_owner = 'no'
+        self.m_deed = None
+
+class gotojail(place):
+    """docstring for jail"""
+
+    def __init__(self):
+        super(gotojail, self).__init__()
+        self.m_name = 'GoToJail'
+        self.m_type = PlaceType.GOTOJAIL
+        self.m_position = 30
+        # self.m_position = position(10, 0)
+        self.m_owner = 'no'
+        self.m_deed = None
 
 class chance(place):
     """docstring for chance"""
@@ -183,7 +206,7 @@ class communitychess(place):
     """docstring for chance"""
 
     def __init__(self, position):
-        super(chance, self).__init__()
+        super(communitychess, self).__init__()
         self.m_name = 'Community Chest'
         self.m_type = PlaceType.COMMUNITY_CHEST
         self.m_position = position
@@ -194,9 +217,9 @@ class communitychess(place):
 class tax(place):
     """docstring for chance"""
 
-    def __init__(self, position):
-        super(chance, self).__init__()
-        self.m_name = 'Super Tax'
+    def __init__(self,name, position):
+        super(tax, self).__init__()
+        self.m_name = name
         self.m_type = PlaceType.TAX
         self.m_position = position
         self.m_owner = 'no'
@@ -244,9 +267,31 @@ def getStreetName(streetid):
 
 
 def getStreetDeeds(streetid):
-    # TO DO
-    pass
-
+    # hard code first
+    if streetid == 0:
+        return streetdeeds(60,30,33,[2,4,10,30,90,160,250], [50,50])
+    elif streetid == 1:
+        return streetdeeds(60, 30, 33, [4,8,20,60,180,320,450], [50,50])
+    elif streetid == 10:
+        return streetdeeds(100, 50, 55, [6, 12, 30, 90, 270, 400, 550], [50, 50])
+    elif streetid == 11:
+        return streetdeeds(100, 50, 55, [6, 12, 30, 90, 270, 400, 550], [50, 50])
+    elif streetid == 12:
+        return streetdeeds(120, 60, 66, [8, 16, 40, 100, 300, 450, 600], [50, 50])
+    elif streetid == 20:
+        return streetdeeds(140, 50, 55, [10, 20, 50, 150, 450, 625, 750], [100, 100])
+    elif streetid == 21:
+        return streetdeeds(140, 50, 55, [10, 20, 50, 150, 450, 625, 750], [100, 100])
+    elif streetid == 22:
+        return streetdeeds(160, 50, 55, [12, 24, 60, 180, 500, 700, 900], [100, 100])
+    # elif streetid == 30:
+    #     return streetdeeds(140, 50, 55, [10, 20, 50, 150, 450, 625, 750], [100, 100])
+    # elif streetid == 31:
+    #     return streetdeeds(140, 50, 55, [10, 20, 50, 150, 450, 625, 750], [100, 100])
+    # elif streetid == 32:
+    #     return streetdeeds(160, 50, 55, [12, 24, 60, 180, 500, 700, 900], [100, 100])
+    else:
+        return streetdeeds(400, 50, 55, [12, 24, 60, 180, 500, 700, 900], [100, 100])
 
 class street(place):
     """Street: street in play board"""
@@ -276,10 +321,11 @@ def getUltilityDeed(name):
 class utility(place):
     """docstring for utility"""
 
-    def __init__(self, name):
+    def __init__(self, name, position):
         super(utility, self).__init__()
         self.m_name = name
         self.m_type = PlaceType.UTILITY
+        self.m_position = position
         self.m_deed = getUltilityDeed(name)
 
 
