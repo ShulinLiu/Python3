@@ -17,8 +17,8 @@ Classes and objects used in monopoly game
 class account(object):
     """Account info class"""
 
-    def __init__(self, id=-1, currencies=0, balance=0, streetlist=None,
-                 stationlist=None, utilitylist=None, mortgagelist=None):
+    def __init__(self, id=-1, currencies=0, balance=0, streetlist=[],
+                 stationlist=[], utilitylist=[], mortgagelist=[]):
         self.m_accountID = id
         self.m_streetList = streetlist
         self.m_stationList = stationlist
@@ -51,14 +51,14 @@ class player(object):
         else:
             return True
 
-    # def getName(self):
-    #     return self.m_name
-    #
-    # def getCurrentPos(self):
-    #     return self.m_currentPos
-    #
-    # def getToken(self):
-    #     return m_token
+    def getName(self):
+        return self.m_name
+
+    def getCurrentPos(self):
+        return self.m_currentPos
+
+    def getToken(self):
+        return m_token
 
     def showAcountInfo(self):
         # print("Player ID: " + self.m_nameID)
