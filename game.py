@@ -13,6 +13,7 @@ logic method design to play game
 from place import *
 from constant import *
 import objects
+import random
 
 class Node:
     def __init__(self, initdata):
@@ -127,12 +128,15 @@ layoutList.append(street(71,39))
 
 turn = 0 #initial turn number
 def getDice():
-    pass
+    dice1 = random.randint(1,7)
+    dice2 = random.randint(1,7)
+    return (dice1 + dice2)
 
 def getTurn(turnNum):
     pass
 
 def makeMove(player, moveNum):
+    print(player.m_name + " move "+ str(moveNum) + " steps.")
     player.m_position += moveNum
 
 
@@ -140,31 +144,99 @@ def getPlaceInfo(position):
     pass
 
 def IsBankrupt(player):
-    pass
+    if player.m_account.m_currencies <= 0 and player.m_account.m_balance <=0:
+        return True
+    else:
+        return False
 
 def auction(place):
     # auction for place
-    pass
+    print("Auction begin:")
+    place.showPlaceInfo()
+    print("Player1: " + player1.m_name + " please offer your price:")
+    # if not (int(input()))
+    price1 = int(input())
+    print("Player2: " + player2.m_name + " please offer your price:")
+    # if not (int(input()))
+    price2 = int(input())
+    while price1 != 0 or price2 != 0:
+        if price1 < price2:
+            print("Player1: " + player1.m_name + " would you like to offer another price or quit?")
+            if str(input()).startswith('y'):
+                winner = player2
+                pirce = price2
+                break
+            else:
+                price1 = int(input())
+        else:
+            print("Player2: " + player2.m_name + " would you like to offer another price or quit?")
+            if str(input()).startswith('y'):
+                winner = player1
+                price = price1
+                break
+            else:
+                price1 = int(input())
+
+    if winner.m_account.m_currencies < place.m_deed.m_purchasePrice:
+        winner.m_account.m_currencies -= price
+        if place.m_type == PlaceType.STREET:
+            winner.m_account.m_streetList.append(place)
+        elif place.m_type == PlaceType.STATION:
+            winner.m_account.m_stationList.append(place)
+        elif place.m_type == PlaceType.UTILITY:
+            winner.m_account.m_utilityList.append(place)
+        else:
+            print("Wrong place for auction!")
+
 
 def pay_rent(player, place):
-    pass
+    if player.m_name == place.m_owner:
+        # no need to pay rent
+        return
+    else:
+        if player1.m_name == place.m_owner:
+            owner = player1
+        elif player2.m_name == place.m_owner:
+            owner = player2
+        else:
+            print("Error, no one own this property!")
+
+        if place.m_type == PlaceType.STREET:
+            print("player " + player.m_name + " need to pay rent: "+ str(place.m_deed.m_rentPrice))
+            player.m_account.m_currencies = player.m_account.m_currencies - place.m_deed.m_rentPrice[0]
+            player.m_account.m_balance = player.m_account.m_balance - place.m_deed.m_rentPrice[0]
+            owner.m_account.m_currencies = owner.m_account.m_currencies - place.m_deed.m_rentPrice[0]
+            owner.m_account.m_balance = owner.m_account.m_balance - place.m_deed.m_rentPrice[0]
+        elif place.m_type == PlaceType.STATION:
+            print("player " + player.m_name + " need to pay rent: "+ str(place.m_deed.m_rentPrice[0]))
+            player.m_account.m_currencies = player.m_account.m_currencies - place.m_deed.m_rentPrice[0]
+            player.m_account.m_balance = player.m_account.m_balance - place.m_deed.m_rentPrice[0]
+            owner.m_account.m_currencies = owner.m_account.m_currencies - place.m_deed.m_rentPrice[0]
+            owner.m_account.m_balance = owner.m_account.m_balance - place.m_deed.m_rentPrice[0]
+        elif place.m_type == PlaceType.UTILITY:
+            print("player " + player.m_name + " need to pay rent: "+ str(place.m_deed.m_rent))
+            player.m_account.m_currencies = player.m_account.m_currencies - place.m_deed.m_rent
+            player.m_account.m_balance = player.m_account.m_balance - place.m_deed.m_rent
+            owner.m_account.m_currencies = owner.m_account.m_currencies - place.m_deed.m_rent
+            owner.m_account.m_balance = owner.m_account.m_balance - place.m_deed.m_rent
 
 def street_action(player, place):
     # actions when player move to a street
-    if place.m_owner is None:  # no one own it now
+    if place.m_owner is None or place.m_owner == 'no':  # no one own it now
         place.showPlaceInfo()
         print(player.m_name + ', do you want to buy it?')
-        if str(input()).startswith() == 'y':
+        if str(input()).startswith('y'):
             # while (player.m_account.m_balance >= place.m_deed.m_purchasePrice
             #     and player.m_account.m_currencies < place.m_deed.m_purchasePrice):
                 # print('Your currencies is not enough.\nDo you want to mortgage a porperties?')
                 # if str(input().startswith() == 'y'):
                 # else:
                 #     break
-            if player.m_account.m_currencies < place.m_deed.m_purchasePrice:
+            if player.m_account.m_currencies >= place.m_deed.m_purchasePrice:
                 # buy a street
-                player.m_account.m_currencies -= place.m_deed.m_purchasePrice
+                player.m_account.m_currencies = player.m_account.m_currencies - place.m_deed.m_purchasePrice
                 player.m_account.m_streetList.append(place)
+                place.m_deed.m_owner = player.m_name
         else:
             # go auction
             auction(place)
@@ -174,57 +246,70 @@ def street_action(player, place):
 
     else:
         # other player own this street
-        pay_rent(player,place)
+        print(place.m_owner + " own this place.")
+        pay_rent(player, place)
 
 def get_chance(player):
-    pass
+    print("player: "+ player.m_name + " get chance.")
 
-while True:
-    turn = 0    # init turn
-    accountList = [] # account list
-    accountList.append(objects.account(1,200,200)) # player1's account
-    accountList.append(objects.account(2,200,200)) # player2's account
-    player1 = objects.player(1,'player1',accountList[0],1,0)  # init player # position in 0
-    player2 = objects.player(2, 'player2', accountList[1],2,0)
+def get_community_chest(player):
+    print("player: " + player.m_name + " get community chest.")
 
-    # which player's turn and begin player
-    if(turn%2 == 0): # player1's turn
-        player = player1
+def station_action(player,place):
+    if place.m_owner is None or place.m_owner == 'no':  # no one own it now
+        place.showPlaceInfo()
+        print(player.m_name + ', do you want to buy it?')
+        if str(input()).startswith('y'):
+            # while (player.m_account.m_balance >= place.m_deed.m_purchasePrice
+            #     and player.m_account.m_currencies < place.m_deed.m_purchasePrice):
+                # print('Your currencies is not enough.\nDo you want to mortgage a porperties?')
+                # if str(input().startswith() == 'y'):
+                # else:
+                #     break
+            if player.m_account.m_currencies >= place.m_deed.m_purchasePrice:
+                # buy a street
+                player.m_account.m_currencies = player.m_account.m_currencies - place.m_deed.m_purchasePrice
+                player.m_account.m_stationList.append(place)
+                place.m_deed.m_owner = player.m_name
+        else:
+            # go auction
+            auction(place)
+
+    elif place.m_owner == player.m_name:
+        return
+
     else:
-        player = player2
+        # other player own this street
+        print(place.m_owner + " own this place.")
+        pay_rent(player, place)
 
-    # player games
-    turnnochange = False
-    move = getDice()
-    makeMove(player, move)
+def utility_action(player,place):
+    if place.m_owner is None or place.m_owner == 'no':  # no one own it now
+        place.showPlaceInfo()
+        print(player.m_name + ', do you want to buy it?')
+        if str(input()).startswith('y'):
+            # while (player.m_account.m_balance >= place.m_deed.m_purchasePrice
+            #     and player.m_account.m_currencies < place.m_deed.m_purchasePrice):
+                # print('Your currencies is not enough.\nDo you want to mortgage a porperties?')
+                # if str(input().startswith() == 'y'):
+                # else:
+                #     break
+            if player.m_account.m_currencies >= place.m_deed.m_purchasePrice:
+                # buy a street
+                player.m_account.m_currencies = player.m_account.m_currencies - place.m_deed.m_purchasePrice
+                player.m_account.m_utilityList.append(place)
+                place.m_deed.m_owner = player.m_name
+        else:
+            # go auction
+            auction(place)
 
-        # judge witch place player is, and what action should he do
-    movetoplace = layoutList[player.getCurrentPos()]
-    if movetoplace.m_type == PlaceType.STREET:
-        # move to street, need buy or pay rent
-        street_action(player, movetoplace)
-    elif movetoplace.m_type == PlaceType.CHANCE:
-        # get chance
-        get_chance(player)
-    elif movetoplace.m_type ==PlaceType.COMMUNITY_CHEST:
-        get_community_chest(player1)
-    elif movetoplace.m_type == PlaceType.GOTOJAIL:
-        turnnochange = True
-        player1.m_position = 10 # move to jail
-    elif movetoplace.m_type ==PlaceType.STATION:
-        station_action(player1,movetoplace)
-    elif movetoplace.m_type == PlaceType.UTILITY:
-        utility_action(player1,movetoplace)
-    elif movetoplace.m_type == PlaceType.TAX:
-        player1.m_account.m_currencies -= 100 # pay tax
-        player1.m_account.m_balance -= 100
-        #elif movetoplace.m_type == PlaceType.JAIL or movetoplace.m_type == PlaceType.PARKING:
+    elif place.m_owner == player.m_name:
+        return
+
     else:
-        print('no action')
+        # other player own this utility
+        print(place.m_owner + " own this place.")
+        pay_rent(player, place)
 
-    if(turnnochange):
-        turn = turn
-    else:
-        turn += 1
 
 

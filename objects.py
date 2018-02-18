@@ -28,9 +28,27 @@ class account(object):
         self.m_balance = balance
 
     def showAccountInfo(self):
-        print("Account ID: " + self.m_accountID)
-        print("balance: " + self.m_balance)
-        print("Currencies: " + self.m_currencies)
+        print("Account ID: " + str(self.m_accountID))
+        print("balance: " + str(self.m_balance))
+        print("Currencies: " + str(self.m_currencies))
+        if self.m_streetList != []:
+            print("street: ")
+            list = self.m_streetList.copy()
+            while list != []:
+                print(list.pop().m_name)
+            # print(self.m_streetList)
+        if self.m_stationList != []:
+            print("station: ")
+            list = self.m_stationList.copy()
+            while list != []:
+                print(list.pop().m_name)
+            # print(self.m_stationList)
+        if self.m_utilityList != []:
+            print("utility: ")
+            list = self.m_utilityList.copy()
+            while list != []:
+                print(list.pop().m_name)
+            # print(self.m_utilityList)
 
 
 class player(object):
@@ -55,15 +73,15 @@ class player(object):
         return self.m_name
 
     def getCurrentPos(self):
-        return self.m_currentPos
+        return self.m_position
 
     def getToken(self):
-        return m_token
+        return self.m_token
 
     def showAcountInfo(self):
         # print("Player ID: " + self.m_nameID)
         # print("Token: " + self.m_token)
-        # print("Current Position: " + self.m_currentPos)
+        print("Current Position: " + str(self.m_position))
         if(self.m_account == None):
             print("Error: account info is not valid!")
             return False
