@@ -6,42 +6,42 @@ accountList.append(objects.account(1,200,200)) # player1's account
 accountList.append(objects.account(2,200,200)) # player2's account
 player1 = objects.player(1,'player1',accountList[0],1,0)  # init player # position in 0
 player2 = objects.player(2, 'player2', accountList[1],2,0)
-player = player1
+the_player = objects.player()
 while True:
 
     # which player's turn and begin player
     if(turn%2 == 0): # player1's turn
-        player = player1
+        the_player = player1
     else:
-        player = player2
+        the_player = player2
 
-    print("It is " + player.m_name + "'s turn.")
+    print("It is " + the_player.m_name + "'s turn.")
 
     # player games
     turnnochange = False
     move = getDice()
-    makeMove(player, move)
+    makeMove(the_player, move)
 
         # judge witch place player is, and what action should he do
-    movetoplace = layoutList[player.getCurrentPos()]
+    movetoplace = layoutList[the_player.getCurrentPos()]
     if movetoplace.m_type == PlaceType.STREET:
         # move to street, need buy or pay rent
-        street_action(player, movetoplace)
+        street_action(the_player, movetoplace)
     elif movetoplace.m_type == PlaceType.CHANCE:
         # get chance
-        get_chance(player)
+        get_chance(the_player)
     elif movetoplace.m_type ==PlaceType.COMMUNITY_CHEST:
-        get_community_chest(player)
+        get_community_chest(the_player)
     elif movetoplace.m_type == PlaceType.GOTOJAIL:
         turnnochange = True
-        player.m_position = 10 # move to jail
+        the_player.m_position = 10 # move to jail
     elif movetoplace.m_type ==PlaceType.STATION:
-        station_action(player,movetoplace)
+        station_action(the_player, movetoplace)
     elif movetoplace.m_type == PlaceType.UTILITY:
-        utility_action(player,movetoplace)
+        utility_action(the_player, movetoplace)
     elif movetoplace.m_type == PlaceType.TAX:
-        player.m_account.m_currencies -= 100 # pay tax
-        player.m_account.m_balance -= 100
+        the_player.m_account.m_currencies -= 100 # pay tax
+        the_player.m_account.m_balance -= 100
         #elif movetoplace.m_type == PlaceType.JAIL or movetoplace.m_type == PlaceType.PARKING:
     else:
         print('no action')
@@ -51,7 +51,7 @@ while True:
     else:
         turn += 1
 
-    player.showAcountInfo()
+    the_player.showAcountInfo()
     player1.showAcountInfo()
     player2.showAcountInfo()
 

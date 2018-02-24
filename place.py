@@ -244,22 +244,27 @@ structure of street id:
 # encoding: utf-8
 def load_dict_from_file(filepath):
     _dict = {}
+    _sdict = {}
     try:
         dict_file =  open(filepath, 'r')
         for line in dict_file:
-            (key, value) = line.strip().split('\t')
+            (key, value, svalue) = line.strip().split('\t')
             _dict[int(key)] = value
+            _dict[int(key)] = svalue
     except IOError as ioerr:
         print ("文件 %s 不存在" % (filepath))
 
-    return _dict
+    return _dict,_sdict
 
-NameDict = load_dict_from_file ('namedict.txt')
+NameDict,SNameDict = load_dict_from_file ('namedict.txt')
 
 StreetDict = {}
 
 def getStreetName(streetid):
     return NameDict.get(streetid)
+
+def getStreetSimpleName(streetid):
+    return SNameDict.get(streetid)
 
 
 # def getStreetPosition(streetid):

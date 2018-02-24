@@ -1,35 +1,42 @@
 # encoding: utf-8
 def load_dict_from_file(filepath):
-	_dict = {}
-	try:
-		with open(filepath, 'r') as dict_file:
-			for line in dict_file:
-				(key, value) = line.strip().split('\t')
-				_dict[int(key)] = value
-	except IOError as ioerr:
-		print ("文件 %s 不存在" % (filepath))
+    _dict = {}
+    _sdict = {}
+    try:
+         dict_file = open(filepath, 'r')
+         for line in dict_file:
+            (key, value, svalue) = line.strip().split('\t')
+            _dict[int(key)] = value
+            _sdict[int(key)] = svalue
+    except IOError as ioerr:
+        print("文件 %s 不存在" % (filepath))
 
-	return _dict
+    return _dict, _sdict
+
 
 def save_dict_to_file(_dict, filepath):
-	try:
-		with open(filepath, 'w') as dict_file:
-			for (key,value) in _dict.items():
-				dict_file.write('%s\t%s\n' % (key, value))
-	except IOError as ioerr:
-		print ("文件 %s 无法创建" % (filepath))
+    try:
+        with open(filepath, 'w') as dict_file:
+            for (key,value) in _dict.items():
+                dict_file.write('%s\t%s\n' % (key, value))
+    except IOError as ioerr:
+        print ("文件 %s 无法创建" % (filepath))
 
-NameDict = load_dict_from_file ('namedict.txt')
-PosDict = load_dict_from_file ('posdict.txt')
-print(PosDict)
+NameDict,SNameDict = load_dict_from_file ('namedict.txt')
+#PosDict = load_dict_from_file ('posdict.txt')
+#print(PosDict)
 
 def getStreetName(streetid):
     return NameDict.get(streetid)
 
-def getStreetPosition(streetid):
-    return PosDict.get(streetid)
+def getStreetSimpleName(streetid):
+    return SNameDict.get(streetid)
+
+# def getStreetPosition(streetid):
+#     return PosDict.get(streetid)
 
 print(getStreetName(21))
+print(getStreetSimpleName(21))
 
 #print(getStreetPosition(21)[0])
  
