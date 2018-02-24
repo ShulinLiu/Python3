@@ -345,7 +345,7 @@ class station(place):
 
     def __init__(self, name, position):
         super(station, self).__init__()
-        self.name = name
+        self.m_name = name
         self.m_position = position
         self.m_type = PlaceType.STATION
         self.m_deed = getStationDeed(name)

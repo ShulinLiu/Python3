@@ -64,4 +64,7 @@ layoutList.append(tax("Super Tax",38))
 layoutList.append(street(71,39))
 
 # test for place
-layoutList[38].showPlaceInfo()
+#layoutList[38].showPlaceInfo()
+a = go()
+print(a.m_name)
+#a.showPlaceInfo()
